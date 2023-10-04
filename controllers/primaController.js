@@ -1,7 +1,7 @@
 const deretBilanganPrima = require("../helpers/prima")
 
 class PrimaController {
-    static async login(req, res, next) {
+    static async display(req, res, next) {
         try {
             const {number} = req.body
             const data = await deretBilanganPrima(number)

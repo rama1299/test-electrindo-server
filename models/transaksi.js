@@ -11,12 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Transaksi.belongsTo(models.User, {
-        foreignKey: 'user_id'
-      })
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
 
-      Transaksi.belongsTo(models.Produk, {
-        foreignKey: 'produk_id'
-      })
+    Transaksi.belongsTo(models.Produk, {
+        foreignKey: 'produk_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
     }
   }
   Transaksi.init({
