@@ -9,13 +9,12 @@ class UserController {
             const data = await User.findAll()
 
             if(!data[0]) {
-                return res.status(400).json({message: 'data not found!'})
+                throw ({name: 'DataNotFound'})
             }
 
             res.status(200).json({data})
         } catch (error) {
-            console.log(error)
-            return res.status(500).json({message: 'internal server error!'})
+            next(error)
         }
     }
 
@@ -27,13 +26,13 @@ class UserController {
             })
 
             if(!data) {
-                return res.status(400).json({message: 'data not found!'})
+                throw ({name: 'DataNotFound'})
             }
 
             res.status(200).json({data})
         } catch (error) {
             console.log(error)
-            return res.status(500).json({message: 'internal server error!'})
+            next(error)
         }
     }
 
@@ -45,20 +44,20 @@ class UserController {
                 where: {email}
             })
             if(existingEmail) {
-                return res.status(400).json({message: 'Email already exist!'})
+                throw ({name: 'EmailAlreadyExists'})
             }
 
             const existingUsername = await User.findOne({
                 where: {username}
             })
             if(existingUsername) {
-                return res.status(400).json({message: 'Username already exist!'})
+                throw ({name: 'UsernameAlreadyExists'})
             }
 
             const saltRounds = 10
             const hashPassword = await bcrypt.hash(password, saltRounds);
             if(!hashPassword) {
-                return res.status(400).json({message: 'Internal server error!'})
+                next(error)
             }
 
             const newUser = await User.create({
@@ -71,7 +70,7 @@ class UserController {
             res.status(200).json({message: 'Register successfully!'})
         } catch (error) {
             console.log(error)
-            return res.status(500).json({message: 'internal server error!'})
+            next(error)
         }
     }
 
@@ -84,15 +83,13 @@ class UserController {
                 where: {email}
             })
             if (!user) {
-                res.status(400).json({ message: 'Invalid email or password.' });
-                return
+                throw ({name: 'IncorrectEmailOrPassword'})
             }
     
             const comparePassword = await bcrypt.compare(password, user.password);
     
             if (!comparePassword) {
-                res.status(400).json({ message: 'Invalid email or password.' });
-                return
+                throw ({name: 'IncorrectEmailOrPassword'})
             }
 
             const userData = {
@@ -110,8 +107,7 @@ class UserController {
             res.status(200).json({message: 'Login successfully!'})
         } catch (error) {
             console.log(error)
-            res.status(500).json({message: 'internal server error!'})
-            return
+            next(error)
         }
     }
 
@@ -123,13 +119,12 @@ class UserController {
                 where: {id}
             })
             if(!userDelete) {
-                res.status(400).json({message: 'Failed delete user!'})
+                throw ({name: 'DeleteFailed'})
             }
 
             res.status(200).json({message: 'Delete user successful!'})
         } catch (error) {
-            console.log(error)
-            return res.status(500).json({message: 'internal server error!'})
+            next(error)
         }
     }
 }

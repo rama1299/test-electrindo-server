@@ -3,6 +3,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const router = require('./routes/index')
+const errorHandler = require('./middlewares/errorHandler')
 
 const app = express()
 const port = 8000
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('tiny'))
 
 app.use(router)
+app.use(errorHandler)
 
 app.listen(port, ()=> {
     console.log(`running on port ${port}`)
